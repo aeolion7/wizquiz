@@ -1,50 +1,64 @@
 import React, { Component } from 'react';
-import questions from '../data/questions.json';
 import SelectForm from './SelectForm';
 import RadioForm from './RadioForm';
-import axios from 'axios'
+import Result from './Result';
+import sortHouse from './sortHouse';
+import axios from 'axios';
 
 export default class Questions extends Component {
   constructor() {
     super();
     this.state = {
-      questions: [{
-        name: '',
-        choices: []
-      }],
+      questions: [
+        {
+          name: '',
+          choices: [],
+        },
+      ],
       answers: [],
       currentQuestion: 0,
-      flip: false
     };
+    this.answerQuestion = this.answerQuestion.bind(this);
   }
 
-  answerQuestion (answerStr) {
-    this.setState((prevState) => {
-      prevState.answers.push(answerStr)
-      prevState.currentQuestion++
-    })
+  answerQuestion(answerStr) {
+    this.setState({
+      answers: [...this.state.answers, answerStr],
+      currentQuestion: this.state.currentQuestion + 1,
+    });
   }
 
   async componentDidMount() {
     try {
-      const response = await axios.get('/questions')
+      const response = await axios.get('/api/questions');
       this.setState({
-        questions: response.data
-      })
+        questions: response.data,
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   render() {
-    const newFlip = !this.state.flip
-    const qIndex = this.state.currentQuestion
-    this.setState({
-      flip: newFlip
-    })
+    const qIndex = this.state.currentQuestion;
+    const questions = this.state.questions;
+    const answers = this.state.answers;
+    const noMoreQuestions = questions.length === answers.length;
     return (
       <div>
-        {this.state.flip ? <SelectForm question={questions[qIndex]} /> : <RadioForm question={questions[qIndex]} />}
+        {noMoreQuestions ? (
+          <Result house={sortHouse(answers)} />
+        ) : qIndex % 2 === 0 ? (
+          <SelectForm
+            question={questions[qIndex]}
+            answerQuestion={this.answerQuestion}
+          />
+        ) : (
+          <RadioForm
+            question={questions[qIndex]}
+            answerQuestion={this.answerQuestion}
+          />
+        )}
       </div>
     );
   }
