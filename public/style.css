@@ -26,7 +26,7 @@ body {
   margin: 0 30%;
 }
 
-#app > #result {
+#app #result {
   display: flex;
   flex-direction: column;
   margin: 0;
