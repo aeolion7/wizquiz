@@ -7,11 +7,10 @@ const RadioForm = props => {
     <form>
       <label>{question.name}</label>
 
-      {question.choices.map((choice, index) => {
+      {question.choices.map(choice => {
         return (
-          <label>
+          <label key={choice.id}>
             <input
-              key={index}
               type="radio"
               name="answer"
               value={choice.value}

@@ -9,9 +9,9 @@ const SelectForm = props => {
       <label>{question.name}</label>
       <select onChange={props.handleChange} name="answer">
         <option value="">--</option>
-        {question.choices.map((choice, index) => {
+        {question.choices.map(choice => {
           return (
-            <option key={index} value={choice.value}>
+            <option key={choice.id} value={choice.value}>
               {choice.label}
             </option>
           );
